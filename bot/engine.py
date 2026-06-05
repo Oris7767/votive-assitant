@@ -49,44 +49,44 @@ BOOKING_COURSES = {
     "chiem-tinh-vedic-l1": {
         "name": "Chiêm tinh Vedic Level 1",
         "package_id": "chiem-tinh-vedic-l1",
-        "description": "12 cung, 9 hành tinh, 27 Nakshatra, 12 nhà, cách đọc lá số",
+        "description": "Giới thiệu chiêm tinh Vedic, 12 nhà, 12 cung hoàng đạo",
         "price": "2,000,000 VNĐ",
-        "duration": "56 buổi",
+        "duration": "8 buổi",
     },
     "chiem-tinh-vedic-l2": {
         "name": "Chiêm tinh Vedic Level 2",
         "package_id": "chiem-tinh-vedic-l2",
-        "description": "Dashas, Transit, Synastry, Predictive techniques",
+        "description": "9 hành tinh, tọa độ và sức ảnh hưởng",
         "price": "5,000,000 VNĐ",
-        "duration": "56 buổi",
+        "duration": "15 buổi",
     },
     "chiem-tinh-vedic-l3": {
         "name": "Chiêm tinh Vedic Level 3",
         "package_id": "chiem-tinh-vedic-l3",
-        "description": "Advanced predictive, Muhurta, Prasna",
+        "description": "Giải nghĩa 27 chòm sao, Đại Vận, Tiểu Vận",
         "price": "5,000,000 VNĐ",
-        "duration": "56 buổi",
+        "duration": "15 buổi",
     },
     "chiem-tinh-vedic-l4": {
         "name": "Chiêm tinh Vedic Level 4",
         "package_id": "chiem-tinh-vedic-l4",
-        "description": "Expert level, case studies, mentorship",
+        "description": "Phân tích chuyên sâu và thực hành",
         "price": "5,000,000 VNĐ",
-        "duration": "56 buổi",
+        "duration": "18 buổi",
     },
     "chiem-tinh-vedic-full": {
         "name": "Chiêm tinh Vedic Full (L1-L4)",
         "package_id": "chiem-tinh-vedic-full",
         "description": "Toàn bộ 4 level — giảm 10% (combo)",
         "price": "15,300,000 VNĐ",
-        "duration": "56 buổi x4",
+        "duration": "56 buổi",
     },
     "khoa-ayurveda": {
         "name": "Khóa Ayurveda",
         "package_id": "khoa-ayurveda",
         "description": "5 nguyên tố, 3 Dosha, Prakruti, Ama, Pranayama",
         "price": "6,000,000 VNĐ",
-        "duration": "12 buổi",
+        "duration": "8 buổi",
     },
     "khoa-so-hoc": {
         "name": "Khóa Số Học Vệ Đà",
@@ -172,13 +172,101 @@ def chat(message: str, session_id: Optional[str] = None, source: str = "landing_
     reply = ""
     actions = []
     
-    # ── Handle handoff ──────────────────────────────────
-    if needs_handoff(intent, confidence):
-        reply = "Bạn đang muốn gặp tư vấn viên phải không? Mình sẽ chuyển thông tin đến admin nhé!"
-        actions.append({
-            "type": "handoff",
-            "message": f"🔴 Handoff request — Session {session_id}\nUser: {message}",
-        })
+    # ── Handle handoff with contact collection ────────────
+    # Check handoff_pending FIRST regardless of intent
+    if session.get("handoff_pending"):
+        contact_info = _collect_contact_from_message(message)
+        if contact_info:
+            # Update session with contact info
+            if contact_info.get("phone"):
+                session["booking_data"]["phone"] = contact_info["phone"]
+            if contact_info.get("zalo"):
+                session["booking_data"]["zalo"] = contact_info["zalo"]
+            
+            final_contact = _collect_handoff_contact(session)
+            reply = (
+                f"Cảm ơn bạn! Mình đã ghi nhận thông tin liên hệ.\n\n"
+                f"📱 Admin sẽ liên hệ bạn trong thời gian sớm nhất.\n\n"
+                f"Nếu cần hỗ trợ ngay, bạn có thể nhắn trực tiếp qua Zalo: **Votive Academy** 🪐"
+            )
+            session["handoff_pending"] = False
+            
+            # Send handoff notification with full contact
+            actions.append({
+                "type": "handoff",
+                "message": (
+                    f"🔴 YÊU CẦU GẶP ADMIN\n\n"
+                    f"👤 Khách hàng\n{final_contact}\n\n"
+                    f"💬 Tin nhắn: {message}\n\n"
+                    f"📋 Session: {session_id}"
+                ),
+            })
+        else:
+            reply = (
+                "Mình chưa nhận được thông tin liên hệ. "
+                "Bạn cho mình xin **số điện thoại hoặc ID Zalo** nhé?\n\n"
+                "Ví dụ: `0909123456` hoặc `zalo: nguyenvana`"
+            )
+    elif needs_handoff(intent, confidence):
+        # If already waiting for contact info, collect it
+        if session.get("handoff_pending"):
+            contact_info = _collect_contact_from_message(message)
+            if contact_info:
+                # Update session with contact info
+                if contact_info.get("phone"):
+                    session["booking_data"]["phone"] = contact_info["phone"]
+                if contact_info.get("zalo"):
+                    session["booking_data"]["zalo"] = contact_info["zalo"]
+                
+                final_contact = _collect_handoff_contact(session)
+                reply = (
+                    f"Cảm ơn bạn! Mình đã ghi nhận thông tin liên hệ.\n\n"
+                    f"📱 Admin sẽ liên hệ bạn trong thời gian sớm nhất.\n\n"
+                    f"Nếu cần hỗ trợ ngay, bạn có thể nhắn trực tiếp qua Zalo: **Votive Academy** 🪐"
+                )
+                session["handoff_pending"] = False
+                
+                # Send handoff notification with full contact
+                actions.append({
+                    "type": "handoff",
+                    "message": (
+                        f"🔴 YÊU CẦU GẶP ADMIN\n\n"
+                        f"👤 Khách hàng\n{final_contact}\n\n"
+                        f"💬 Tin nhắn: {message}\n\n"
+                        f"📋 Session: {session_id}"
+                    ),
+                })
+            else:
+                reply = (
+                    "Mình chưa nhận được thông tin liên hệ. "
+                    "Bạn cho mình xin **số điện thoại hoặc ID Zalo** nhé?"
+                )
+        else:
+            # First handoff request — check if we have contact info
+            contact_info = _collect_handoff_contact(session)
+            
+            if contact_info:
+                reply = (
+                    f"Cảm ơn bạn! Mình đã ghi nhận yêu cầu gặp tư vấn viên.\n\n"
+                    f"📱 Admin sẽ liên hệ bạn trong thời gian sớm nhất.\n\n"
+                    f"Nếu cần hỗ trợ ngay, bạn có thể nhắn trực tiếp qua Zalo: **Votive Academy** 🪐"
+                )
+                actions.append({
+                    "type": "handoff",
+                    "message": (
+                        f"🔴 YÊU CẦU GẶP ADMIN\n\n"
+                        f"👤 Khách hàng\n{contact_info}\n\n"
+                        f"💬 Tin nhắn: {message}\n\n"
+                        f"📋 Session: {session_id}"
+                    ),
+                })
+            else:
+                # Need to collect contact info first
+                reply = (
+                    "Bạn muốn gặp tư vấn viên phải không? Mình sẽ chuyển thông tin đến admin.\n\n"
+                    "Bạn cho mình xin **số điện thoại hoặc ID Zalo** để admin liên hệ lại nhé?"
+                )
+                session["handoff_pending"] = True
     
     # ── Handle booking flow ─────────────────────────────
     elif needs_booking_flow(intent) or session["booking_data"]["step"] > 0:
@@ -228,12 +316,12 @@ def _handle_faq(message: str, session: dict) -> Tuple[str, list]:
     quant = _load_file("quant_framework.md")
     ethics = _load_file("ethics.md")
     terms = _load_file("terms.md")
-    
+
     context_parts = []
     if course_info:
         context_parts.append(f"=== THÔNG TIN KHÓA HỌC ===\n{course_info}")
     if services:
-        context_parts.append(f"=== THÔNG TIN DỊCH VỤ ===\n{services}")
+        context_parts.append(f"=== THÔNG TIN DỊCH VỤ CHIÊM TINH ===\n{services}")
     if quant:
         context_parts.append(f"=== AETHER ASTRO-QUANT ENGINE ===\n{quant}")
     if ethics:
@@ -242,25 +330,27 @@ def _handle_faq(message: str, session: dict) -> Tuple[str, list]:
         context_parts.append(f"=== ĐIỀU KHOẢN DỊCH VỤ ===\n{terms}")
     
     # 2. RAG semantic search for additional context (horoscope corpus)
-    rag_results = search_and_format(message, k=3, max_chars=2000)
+    rag_results = search_and_format(message, k=5, max_chars=4000)
     if rag_results:
         context_parts.append(f"=== KIẾN THỨC CHIÊM TINH (RAG) ===\n{rag_results}")
-    
+
     rag_context = "\n\n".join(context_parts) if context_parts else None
-    
+
     if rag_context:
         system_prompt = get_system_prompt_with_rag(rag_context)
     else:
         system_prompt = get_system_prompt()
-    
+
     # Build conversation history
     messages = [{"role": "system", "content": system_prompt}]
     recent = session["messages"][-10:]
     for msg in recent:
         messages.append({"role": msg["role"], "content": msg["content"]})
     messages.append({"role": "user", "content": message})
-    
+
     reply = _call_deepseek(messages)
+    
+    log.info(f"📖 RAG context chars: {len(rag_context) if rag_context else 0} | FAQ handled")
     return reply, []
 
 
@@ -664,6 +754,72 @@ def _poll_payment_status(payment_code: str, student_id: str, session_id: str):
         })
     except Exception as e:
         log.error(f"Error marking expired: {e}")
+
+
+def _collect_handoff_contact(session: dict) -> Optional[str]:
+    """
+    Collect contact info from session for handoff.
+    Returns formatted contact string or None.
+    """
+    bd = session.get("booking_data", {})
+    
+    contact_parts = []
+    
+    # Check if we have collected info from booking flow
+    if bd.get("phone"):
+        contact_parts.append(f"SĐT: {bd['phone']}")
+    if bd.get("zalo"):
+        contact_parts.append(f"Zalo: {bd['zalo']}")
+    if bd.get("email"):
+        contact_parts.append(f"Email: {bd['email']}")
+    if bd.get("name"):
+        contact_parts.append(f"Tên: {bd['name']}")
+    
+    if contact_parts:
+        return " | ".join(contact_parts)
+    
+    return None
+
+
+def _collect_contact_from_message(message: str) -> dict:
+    """
+    Extract phone/Zalo from user message.
+    Returns dict with 'phone' and/or 'zalo' keys.
+    """
+    result = {}
+    msg = message.strip()
+    
+    # Check for Zalo ID patterns
+    zalo_patterns = [
+        r"(?:zalo|z)\s*[:\-]?\s*(\d{6,12})",
+        r"(?:id|zalo)\s*(?:là|la)?\s*[:\-]?\s*([a-zA-Z0-9_\.]{4,30})",
+        r"(?:nick|nickname)\s*[:\-]?\s*([a-zA-Z0-9_\.]{3,30})",
+    ]
+    
+    for pattern in zalo_patterns:
+        match = re.search(pattern, msg.lower())
+        if match:
+            result["zalo"] = match.group(1)
+            break
+    
+    # Check for phone patterns (Vietnamese format)
+    phone_patterns = [
+        r"(?:sdt|số|dt|phone|mobile|mob)\s*[:\-]?\s*(\d{8,12})",
+        r"\b(0\d{9,10})\b",  # Vietnamese phone: 09xxxxxxxx, 01xxxxxxxx
+        r"\b(\+84\d{9,10})\b",  # International: +849xxxxxxxx
+    ]
+    
+    for pattern in phone_patterns:
+        match = re.search(pattern, msg.lower())
+        if match:
+            phone = match.group(1)
+            # Normalize: remove +84 prefix
+            if phone.startswith("+84"):
+                phone = "0" + phone[3:]
+            result["phone"] = phone
+            break
+    
+    return result
 
 
 def _handle_off_topic(message: str) -> str:

@@ -23,13 +23,15 @@ DATA_DIR = Path(__file__).parent.parent / "data"
 # ── Knowledge base files ───────────────────────────────────
 KB_FILES = {
     "course_info": DATA_DIR / "course_info.md",
+    "services": DATA_DIR / "services.md",
     "ethics": DATA_DIR / "ethics.md",
     "terms": DATA_DIR / "terms.md",
+    "quant": DATA_DIR / "quant_framework.md",
 }
 
 # ── Chunk config ───────────────────────────────────────────
-CHUNK_SIZE = 500
-CHUNK_OVERLAP = 100
+CHUNK_SIZE = 800
+CHUNK_OVERLAP = 150
 
 # Cache
 _chunks_cache = None
@@ -92,9 +94,9 @@ def tokenize(text: str) -> List[str]:
 
 def search(query: str, k: int = 5) -> List[Dict]:
     """
-    Keyword + TF scoring search.
+    Keyword + TF-IDF search with n-gram expansion.
     
-    Score = number of query terms found in chunk (weighted by term rarity).
+    Score = weighted by term rarity + n-gram matches.
     """
     chunks = load_chunks()
     if not chunks:
@@ -107,16 +109,24 @@ def search(query: str, k: int = 5) -> List[Dict]:
     # Build IDF (inverse document frequency)
     doc_freq = Counter()
     for chunk in chunks:
-        chunk_tokens = set(tokenize(chunk["text"]))
+        chunk_tokens = tokenize(chunk["text"])
         for token in chunk_tokens:
             doc_freq[token] += 1
 
     total_docs = len(chunks)
 
+    # Expand query with bigrams for better matching
+    query_bigrams = set()
+    words = query.lower().split()
+    for i in range(len(words) - 1):
+        bigram = f"{words[i]} {words[i+1]}"
+        query_bigrams.add(bigram)
+
     scored = []
     for chunk in chunks:
         chunk_tokens = tokenize(chunk["text"])
         chunk_token_set = set(chunk_tokens)
+        chunk_text_lower = chunk["text"].lower()
 
         # TF-IDF score
         score = 0
@@ -124,7 +134,16 @@ def search(query: str, k: int = 5) -> List[Dict]:
             if token in chunk_token_set:
                 tf = chunk_tokens.count(token) / len(chunk_tokens)
                 idf = max(1, total_docs / max(1, doc_freq.get(token, 1)))
-                score += tf * idf
+                # Boost for exact word match
+                if token in chunk_text_lower.split():
+                    score += tf * idf * 1.5
+                else:
+                    score += tf * idf
+
+        # Bonus for bigram matches
+        for bigram in query_bigrams:
+            if bigram in chunk_text_lower:
+                score += 2.0  # Strong boost for phrase match
 
         if score > 0:
             scored.append((score, chunk))

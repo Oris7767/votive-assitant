@@ -63,10 +63,13 @@ def get_system_prompt_with_rag(rag_context: str) -> str:
     return f"""{SYSTEM_PROMPT}
 
 ---
-📖 THÔNG TIN BỔ SUNG TỪ KNOWLEDGE BASE:
+📖 THÔNG TIN CHI TIẾT TỪ KNOWLEDGE BASE:
 {rag_context}
 ---
-(Sử dụng thông tin trên để trả lời chính xác hơn. Nếu không liên quan, bỏ qua.)
+💡 HƯỚNG DẪN:
+- Ưu tiên trả lời dựa trên thông tin từ Knowledge Base ở trên
+- Trích dẫn cụ thể nếu có (ví dụ: "Theo như trong khóa học...")
+- Nếu thông tin từ KB không đủ → nói rõ và gợi ý khách để lại thông tin để admin tư vấn
 """
 
 

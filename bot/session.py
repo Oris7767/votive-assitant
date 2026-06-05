@@ -72,6 +72,7 @@ def create_session(source: str = "landing_page") -> dict:
             "step": 0,
         },
         "student_id": None,
+        "handoff_pending": False,  # Track if waiting for contact info
         "metadata": {
             "source": source,
         },

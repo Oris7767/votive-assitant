@@ -25,6 +25,7 @@ INTENT_PATTERNS = {
         r"\b(offer|ưu đãi|uu dai|giảm giá|giam gia|khuyến mãi|khuyen mai|discount|promotion)\b",
     ],
     "faq": [
+        # Course-related FAQ
         r"\b(khóa học|khoa hoc) .*(gì|nao|nào|content|nội dung|noi dung|day|dạy|hoc)\b",
         r"\b(học|hoc) (mấy|may) (tháng|thang|tuần|tuan|buổi|buoi)\b",
         r"\b(ai dạy|ai day|giảng viên|giang vien|teacher|instructor)\b",
@@ -33,10 +34,27 @@ INTENT_PATTERNS = {
         r"\b(lịch học|lich hoc|schedule|thời gian|thoi gian|khi nào|khi nao)\b",
         r"\b(yêu cầu|yeu cau|prerequisite|điều kiện|dieu kien|require)\b",
         r"\b(học online|hoc online|offline|hình thức|hinh thuc)\b",
-        # General Vedic astrology knowledge — use RAG
+        # Vedic Astrology Knowledge — use RAG
         r"\bchiêm tinh.*(gì|nao|nào|khác|difference|so sánh|so sanh|vedic|vệ đà|ve da|western|phương tay|phuong tay)\b",
         r"\b(vedic|vệ đà|ve da|jyotish) (astrology|chiêm tinh|la gì|gi|gì)\b",
         r"\b(12 cung|9 hành tinh|27 nakshatra|navagraha|rashi|bhava)\b",
+        # Service-related questions
+        r"\b(dịch vụ|dich vu|tarot|kinh dịch|kinh dich|prasna) .*(là gì|gi|nao|nào|giá|gia)\b",
+        r"\b(tarot|kinh dịch|prasna) (là|có|giá|gì)\b",
+        r"\b(so sánh|so sanh|khác nhau|khac nhau) .*(prsna|tarot|kinh dịch)\b",
+        # Ethics and policies
+        r"\b(chính sách|chinh sach|chính sách hoàn tiền|hoàn tiền|refund)\b",
+        r"\b(đạo đức|dao duc|cam kết|cam ket)\b",
+        r"\b(thanh toán|thanh toan) .*(như thế nào|ntn|nào|nao)\b",
+        r"\b(cách thanh toán|cach thanh toan|hướng dẫn thanh toán)\b",
+        # Specific astrology terms
+        r"\b(nakshatra|m nakshatra|chòm sao|chom sao) .*(là|gi|gì|nao|nào)\b",
+        r"\b(dasha|mahadasha|antardasha) .*(là|gi|gì)\b",
+        r"\b(transit|vận) .*(là|gi|gì)\b",
+        r"\b(synastry) .*(là|gi|gì)\b",
+        r"\b(muhurta| electional) .*(là|gi|gì)\b",
+        r"\b(ascendant|lagna) .*(là|gi|gì)\b",
+        r"\b(sun sign|moon sign|rising sign) .*(là|gi|gì)\b",
     ],
     "payment": [
         r"\b(thanh toán|thanh toan|pay|payment|chuyển khoản|chuyen khoan|bank|vnpay|sepay|momo)\b",
