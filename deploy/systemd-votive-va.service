@@ -1,0 +1,21 @@
+# ============================================================
+# Systemd service — votive-va
+# Deploy: scp to /etc/systemd/system/votive-va.service
+# Enable: systemctl enable votive-va && systemctl start votive-va
+# ============================================================
+
+[Unit]
+Description=Votive Virtual Assistant (FastAPI)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/votive-virtual-assistant
+ExecStart=/root/votive-virtual-assistant/venv/bin/python3 -m uvicorn api.server:app --host 0.0.0.0 --port 8002
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

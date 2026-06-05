@@ -1,0 +1,18 @@
+# Votive Virtual Assistant - Requirements
+
+# Core
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# RAG — lightweight keyword search (no ML libraries needed!)
+# Pure Python + numpy only — runs on any server
+
+# LLM (DeepSeek)
+openai>=1.30.0  # DeepSeek uses OpenAI-compatible API
+
+# Supabase
+supabase>=2.3.0
+
+# Web (FastAPI server)
+fastapi>=0.104.0
+uvicorn>=0.24.0

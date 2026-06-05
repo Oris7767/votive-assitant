@@ -1,0 +1,43 @@
+{
+  "session_id": "8cf0f31d",
+  "created_at": "2026-06-03T13:33:43.718715+00:00",
+  "updated_at": "2026-06-03T13:33:57.896624+00:00",
+  "messages": [
+    {
+      "role": "user",
+      "content": "tôi muốn đăng ký khóa học chiêm tinh level 1",
+      "timestamp": "2026-06-03T13:33:43.741743+00:00"
+    },
+    {
+      "role": "assistant",
+      "content": "Tuyệt vời! 🎉 Votive Academy hiện có các khóa học sau:\n\n  📚 **Chiêm tinh Vedic Level 1** — 2,000,000 VNĐ (56 buổi)\n  📚 **Chiêm tinh Vedic Level 2** — 5,000,000 VNĐ (56 buổi)\n  📚 **Chiêm tinh Vedic Level 3** — 5,000,000 VNĐ (56 buổi)\n  📚 **Chiêm tinh Vedic Level 4** — 5,000,000 VNĐ (56 buổi)\n  📚 **Chiêm tinh Vedic Full (L1-L4)** — 15,300,000 VNĐ (56 buổi x4)\n  📚 **Khóa Ayurveda** — 6,000,000 VNĐ (12 buổi)\n  📚 **Khóa Số Học Vệ Đà** — 3,800,000 VNĐ (10 buổi)\n\nBạn quan tâm dịch vụ nào? (gõ tên khóa học)",
+      "timestamp": "2026-06-03T13:33:43.743030+00:00"
+    },
+    {
+      "role": "user",
+      "content": "chiêm tinh level 1",
+      "timestamp": "2026-06-03T13:33:57.895242+00:00"
+    },
+    {
+      "role": "assistant",
+      "content": "Cảm ơn bạn đã quan tâm đến khóa **Chiêm tinh Vedic Level 1**! 🪐✨\n\nDưới đây là thông tin chi tiết:\n\n**📌 Khóa học: Chiêm tinh Vedic (Jyotish)**\n- **Học phí:** 1,000,000 VNĐ (tập thể) / 2,500,000 VNĐ (1-1)\n- **Thời lượng:** 56 buổi (có thể kéo dài thêm ~20% nhưng không phát sinh phí)\n- **Nội dung:** 12 cung, 9 hành tinh, 27 Nakshatra, 12 nhà, Dashas, Transit, Synastry, Predictive\n- **Hình thức:** Online qua Telegram/Google Meet\n- **Sĩ số:** 6–10 học viên/lớp\n- **Giảng viên:** Trâm Phạm — Chứng chỉ Gurukul (học viện top 3 Ấn Độ)\n\n**🎯 Đối tượng phù hợp:**\n- Người mới chưa biết gì về chiêm tinh\n- Người đã học nhưng chưa tự luận giải được\n- Người muốn hiểu rõ bản thân, định hướng cuộc sống\n\nBạn muốn đăng ký **học tập thể** (1,000,000 VNĐ) hay **học 1-1** (2,500,000 VNĐ) ạ?",
+      "timestamp": "2026-06-03T13:33:57.896604+00:00"
+    }
+  ],
+  "intent": "faq",
+  "booking_data": {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "zalo": null,
+    "birth_date": null,
+    "birth_time": null,
+    "birth_location": null,
+    "course_name": null,
+    "step": 0
+  },
+  "student_id": null,
+  "metadata": {
+    "source": "test"
+  }
+}

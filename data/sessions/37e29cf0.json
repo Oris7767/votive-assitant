@@ -1,0 +1,33 @@
+{
+  "session_id": "37e29cf0",
+  "created_at": "2026-06-03T13:08:35.090043+00:00",
+  "updated_at": "2026-06-03T13:08:35.105690+00:00",
+  "messages": [
+    {
+      "role": "user",
+      "content": "chào bạn",
+      "timestamp": "2026-06-03T13:08:35.104621+00:00"
+    },
+    {
+      "role": "assistant",
+      "content": "Chào bạn! 👋 Mình là Aether, trợ lý ảo của Votive. Mình có thể giúp gì cho bạn hôm nay? 🪐",
+      "timestamp": "2026-06-03T13:08:35.105556+00:00"
+    }
+  ],
+  "intent": "smalltalk",
+  "booking_data": {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "zalo": null,
+    "birth_date": null,
+    "birth_time": null,
+    "birth_location": null,
+    "course_name": null,
+    "step": 0
+  },
+  "student_id": null,
+  "metadata": {
+    "source": "test"
+  }
+}

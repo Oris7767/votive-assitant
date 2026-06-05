@@ -1,0 +1,33 @@
+{
+  "session_id": "5440efed",
+  "created_at": "2026-06-03T13:08:35.170673+00:00",
+  "updated_at": "2026-06-03T13:08:35.525089+00:00",
+  "messages": [
+    {
+      "role": "user",
+      "content": "chiêm tinh veda dùng để làm gì",
+      "timestamp": "2026-06-03T13:08:35.524389+00:00"
+    },
+    {
+      "role": "assistant",
+      "content": "Xin lỗi, mình đang gặp sự cố. Bạn thử lại sau nhé! 🙏",
+      "timestamp": "2026-06-03T13:08:35.525076+00:00"
+    }
+  ],
+  "intent": "faq",
+  "booking_data": {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "zalo": null,
+    "birth_date": null,
+    "birth_time": null,
+    "birth_location": null,
+    "course_name": null,
+    "step": 0
+  },
+  "student_id": null,
+  "metadata": {
+    "source": "test"
+  }
+}

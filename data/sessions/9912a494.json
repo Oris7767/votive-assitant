@@ -1,0 +1,33 @@
+{
+  "session_id": "9912a494",
+  "created_at": "2026-06-03T13:25:43.685645+00:00",
+  "updated_at": "2026-06-03T13:25:43.702611+00:00",
+  "messages": [
+    {
+      "role": "user",
+      "content": "chào bạn",
+      "timestamp": "2026-06-03T13:25:43.702138+00:00"
+    },
+    {
+      "role": "assistant",
+      "content": "Chào bạn! 👋 Mình là Carmen, trợ lý ảo của La Bàn Số Mệnh. Mình có thể giúp gì cho bạn hôm nay? 🪐",
+      "timestamp": "2026-06-03T13:25:43.702600+00:00"
+    }
+  ],
+  "intent": "smalltalk",
+  "booking_data": {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "zalo": null,
+    "birth_date": null,
+    "birth_time": null,
+    "birth_location": null,
+    "course_name": null,
+    "step": 0
+  },
+  "student_id": null,
+  "metadata": {
+    "source": "test"
+  }
+}

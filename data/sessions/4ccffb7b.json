@@ -1,0 +1,33 @@
+{
+  "session_id": "4ccffb7b",
+  "created_at": "2026-06-03T13:13:03.125326+00:00",
+  "updated_at": "2026-06-03T13:13:08.403669+00:00",
+  "messages": [
+    {
+      "role": "user",
+      "content": "chiêm tinh veda dùng để làm gì",
+      "timestamp": "2026-06-03T13:13:08.402940+00:00"
+    },
+    {
+      "role": "assistant",
+      "content": "Chào bạn! 👋 Mình là Carmen, trợ lý của La Bàn Số Mệnh.\n\nChiêm tinh Vệ Đà (Jyotish) — hay còn gọi là \"khoa học ánh sáng\" — là một hệ thống tri thức cổ xưa từ Ấn Độ, giúp chúng ta hiểu rõ hơn về bản thân và cuộc sống thông qua lá số tử vi (dựa trên ngày, giờ, nơi sinh).\n\nCụ thể, Chiêm tinh Vedic được dùng để:\n\n🪐 **Hiểu rõ bản thân:** Khám phá tính cách, điểm mạnh, điểm yếu, tiềm năng và bài học cuộc đời mà bạn mang theo.\n\n✨ **Định hướng cuộc sống:** Nhìn nhận các xu hướng, chu kỳ tốt/xấu trong từng lĩnh vực như sự nghiệp (Nhà 10), tài chính (Nhà 2, 11), hôn nhân (Nhà 7), gia đạo (Nhà 4), v.v.\n\n📅 **Chọn ngày tốt (Muhurta):** Xác định thời điểm thuận lợi để bắt đầu một việc quan trọng (cưới hỏi, khai trương, xuất hành...).\n\n💞 **Xem hợp hôn (Matchmaking):** So sánh lá số hai người để đánh giá sự hòa hợp trong hôn nhân và các mối quan hệ.\n\n🔮 **Dự đoán (Predictive):** Sử dụng các chu kỳ hành tinh (Dasha) và chuyển động của các hành tinh (Transit) để dự đoán những sự kiện tiềm năng trong tương lai.\n\n🌿 **Kết hợp với Ayurveda:** Hỗ trợ hiểu về thể trạng sức khỏe dựa trên các hành tinh và cung hoàng đạo.\n\n**Quan trọng:** Chiêm tinh Vedic không quyết định số phận, mà chỉ phản ánh xu hướng và tiềm năng. Mỗi người vẫn có quyền tự do ý chí và trách nhiệm với lựa chọn của mình.\n\nBạn có muốn tìm hiểu thêm về một khía cạnh cụ thể nào không, hay muốn mình giới thiệu về khóa học Chiêm tinh Vedic tại Votive Academy? 🪐✨",
+      "timestamp": "2026-06-03T13:13:08.403592+00:00"
+    }
+  ],
+  "intent": "faq",
+  "booking_data": {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "zalo": null,
+    "birth_date": null,
+    "birth_time": null,
+    "birth_location": null,
+    "course_name": null,
+    "step": 0
+  },
+  "student_id": null,
+  "metadata": {
+    "source": "test"
+  }
+}
