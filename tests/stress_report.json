@@ -1,0 +1,103 @@
+{
+  "timestamp": "2026-06-23 11:45:54",
+  "config": {
+    "requests": 15,
+    "concurrency": 3,
+    "package_id": "chiem-tinh-vedic-l1",
+    "real_payment": false,
+    "real_telegram": true
+  },
+  "summary": "total=15 ok=15 fail=0 avg_latency_s=0.601",
+  "cases": [
+    {
+      "name": "payment.create.fallback",
+      "ok": true,
+      "duration_s": 0.354383,
+      "detail": "code=VOTIVECTV1ZJ2W7N | bank=MBBANK | qr=yes"
+    },
+    {
+      "name": "payment.create.fallback",
+      "ok": true,
+      "duration_s": 0.358208,
+      "detail": "code=VOTIVECTV1636YLS | bank=MBBANK | qr=yes"
+    },
+    {
+      "name": "payment.create.fallback",
+      "ok": true,
+      "duration_s": 0.323548,
+      "detail": "code=VOTIVECTV14GP9V3 | bank=MBBANK | qr=yes"
+    },
+    {
+      "name": "handoff.telegram.send",
+      "ok": true,
+      "duration_s": 0.894428,
+      "detail": "sent=yes"
+    },
+    {
+      "name": "payment.check_status",
+      "ok": true,
+      "duration_s": 0.420358,
+      "detail": "code=VOTIVECTV13RQBNT status=pending"
+    },
+    {
+      "name": "handoff.bot.flow",
+      "ok": true,
+      "duration_s": 0.88029,
+      "detail": "{\"session_id\": \"4258c4a5\", \"stage\": \"\", \"ask_contact\": true, \"handoff_confirmed\": true, \"actions\": [{\"type\": \"handoff\", \"message\": \"🔴 YÊU CẦU GẶP ADMIN\\n\\n👤 Khách hàng\\nSĐT: 0909123456 | Zalo: nguyenvana\\n\\n💬 Tin nhắn: 0909123456 / zalo: nguyenvana\\n\\n📋 Session: 4258c4a5\"}], \"reply_snippet\": \"Cảm ơn bạn! Mình đã ghi nhận thông tin liên hệ.\\n\\n📱 Admin sẽ liên hệ bạn trong thời gian sớm nhất.\\n\\nNếu cần hỗ trợ ngay, \"}"
+    },
+    {
+      "name": "payment.check_status",
+      "ok": true,
+      "duration_s": 0.45584,
+      "detail": "code=VOTIVECTV1N8NYSA status=pending"
+    },
+    {
+      "name": "handoff.bot.flow",
+      "ok": true,
+      "duration_s": 0.88007,
+      "detail": "{\"session_id\": \"0980bd74\", \"stage\": \"\", \"ask_contact\": true, \"handoff_confirmed\": true, \"actions\": [{\"type\": \"handoff\", \"message\": \"🔴 YÊU CẦU GẶP ADMIN\\n\\n👤 Khách hàng\\nSĐT: 0909123456 | Zalo: nguyenvana\\n\\n💬 Tin nhắn: 0909123456 / zalo: nguyenvana\\n\\n📋 Session: 0980bd74\"}], \"reply_snippet\": \"Cảm ơn bạn! Mình đã ghi nhận thông tin liên hệ.\\n\\n📱 Admin sẽ liên hệ bạn trong thời gian sớm nhất.\\n\\nNếu cần hỗ trợ ngay, \"}"
+    },
+    {
+      "name": "handoff.bot.flow",
+      "ok": true,
+      "duration_s": 0.899973,
+      "detail": "{\"session_id\": \"6275c7fe\", \"stage\": \"\", \"ask_contact\": true, \"handoff_confirmed\": true, \"actions\": [{\"type\": \"handoff\", \"message\": \"🔴 YÊU CẦU GẶP ADMIN\\n\\n👤 Khách hàng\\nSĐT: 0909123456 | Zalo: nguyenvana\\n\\n💬 Tin nhắn: 0909123456 / zalo: nguyenvana\\n\\n📋 Session: 6275c7fe\"}], \"reply_snippet\": \"Cảm ơn bạn! Mình đã ghi nhận thông tin liên hệ.\\n\\n📱 Admin sẽ liên hệ bạn trong thời gian sớm nhất.\\n\\nNếu cần hỗ trợ ngay, \"}"
+    },
+    {
+      "name": "payment.create.real",
+      "ok": true,
+      "duration_s": 0.290804,
+      "detail": "code=VOTIVECTV18LNTC9 mode=real_or_mock"
+    },
+    {
+      "name": "payment.create.fallback",
+      "ok": true,
+      "duration_s": 0.343368,
+      "detail": "code=VOTIVECTV15MFDF7 | bank=MBBANK | qr=yes"
+    },
+    {
+      "name": "payment.create.real",
+      "ok": true,
+      "duration_s": 0.33607,
+      "detail": "code=VOTIVECTV1GBJ4X7 mode=real_or_mock"
+    },
+    {
+      "name": "handoff.telegram.send",
+      "ok": true,
+      "duration_s": 0.891793,
+      "detail": "sent=yes"
+    },
+    {
+      "name": "payment.create.real",
+      "ok": true,
+      "duration_s": 0.452608,
+      "detail": "code=VOTIVECTV15TKPMQ mode=real_or_mock"
+    },
+    {
+      "name": "handoff.telegram.send",
+      "ok": true,
+      "duration_s": 1.235024,
+      "detail": "sent=yes"
+    }
+  ]
+}
