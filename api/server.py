@@ -3,6 +3,7 @@ FastAPI Server — Votive Virtual Assistant
 
 Endpoints:
 - POST /chat          — Main chat endpoint
+- POST /api/chat      — Alias chat endpoint
 - GET  /health        — Health check
 - GET  /session/{id}  — Get session status
 - POST /booking       — Direct booking (bypass chat)
@@ -29,19 +30,18 @@ logging.basicConfig(
 
 app = FastAPI(title="Votive Virtual Assistant", version="0.1.0")
 
-# ── CORS — allow Netlify landing page ────────────────────────────
+# ── CORS — allow Netlify landing page & domains ───────────────────────────
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        # Production
         "https://vedicvn.sbs",
         "https://www.vedicvn.sbs",
         "https://votive.vedicvn.com",
         "https://www.votive.vedicvn.com",
-        # Local dev
         "http://localhost:3000",
         "http://localhost:5173",
     ],
+    allow_origin_regex=r"https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -51,7 +51,15 @@ app.add_middleware(
 class ChatRequest(BaseModel):
     message: str
     session_id: Optional[str] = None
-    source: str = "landing_page"
+    sessionId: Optional[str] = None
+    source: Optional[str] = "landing_page"
+    context: Optional[str] = None
+
+    def resolved_session_id(self) -> Optional[str]:
+        return self.session_id or self.sessionId
+
+    def resolved_source(self) -> str:
+        return self.source or self.context or "landing_page"
 
 
 class ChatResponse(BaseModel):
@@ -69,13 +77,14 @@ def health():
 
 
 @app.post("/chat", response_model=ChatResponse)
+@app.post("/api/chat", response_model=ChatResponse)
 def chat_endpoint(req: ChatRequest):
     """Main chat endpoint."""
     try:
         result = chat(
             message=req.message,
-            session_id=req.session_id,
-            source=req.source,
+            session_id=req.resolved_session_id(),
+            source=req.resolved_source(),
         )
         return ChatResponse(**result)
     except Exception as e:
