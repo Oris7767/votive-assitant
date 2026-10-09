@@ -17,16 +17,19 @@ from typing import Tuple
 # Keyword patterns per intent
 INTENT_PATTERNS = {
     "booking": [
-        r"\b(đăng ký|dang ky|ghi danh|muon hoc|tham gia|join)\b",
-        r"\b(khoá học|khóa học|khoá hoc|khoc hoc|class|khóa)\b",
-        r"\b(đăng kí|dang ki|sign up|register|enroll)\b",
-        r"\b(học phí|hoc phi|giá bao|gia bao|phí là|phi la|bao nhiêu|bao nhieu|giá tiền|gia tien|cost|price|how much)\b",
-        r"\b(muốn tìm hiểu|tim hieu|quan tâm|quan tam|tu vấn|tu van|consult)\b",
-        r"\b(offer|ưu đãi|uu dai|giảm giá|giam gia|khuyến mãi|khuyen mai|discount|promotion)\b",
+        r"\b(tôi muốn đăng ký|muốn đăng ký|muon dang ky|đăng ký khóa|dang ky khoa|đăng kí khóa|muốn ghi danh|muon ghi danh|cho mình đăng ký|cho em đăng ký|muốn mua khóa|mua khóa|chốt khóa|lấy khóa|sign up for|enroll in)\b",
+        r"\b(hướng dẫn|huong dan|cách|cach|xin link|lấy link) .*(đăng ký|dang ky|đăng kí|dang ki)\b",
+        r"\b(hướng dẫn đăng ký|cách đăng ký|link đăng ký|form đăng ký|muốn tham gia học|đăng ký luôn|muốn nhập học)\b",
+        r"\b(đăng ký học|đăng kí học|ghi danh học|thanh toán học phí|hướng dẫn thanh toán khóa)\b",
+        r"^(đăng ký|dang ky|đăng kí|dang ki|ghi danh|enroll|register)$",
     ],
     "faq": [
-        # Course-related FAQ
-        r"\b(khóa học|khoa hoc) .*(gì|nao|nào|content|nội dung|noi dung|day|dạy|hoc)\b",
+        # Course inquiry / Pricing / Content FAQ
+        r"\b(học phí|hoc phi|giá bao|gia bao|phí là|phi la|bao nhiêu tiền|bao nhieu tien|giá tiền|gia tien|học phí bao nhiêu|chi phí học|giá bao nhiêu)\b",
+        r"\b(ưu đãi|uu dai|giảm giá|giam gia|khuyến mãi|khuyen mai|discount|promotion)\b",
+        r"\b(muốn tìm hiểu|tim hieu|quan tâm|quan tam|tư vấn|tu van|consult|giới thiệu|gioi thieu)\b",
+        r"\b(khóa học|khoa hoc) .*(gì|nao|nào|content|nội dung|noi dung|day|dạy|hoc|bao gồm|những gì)\b",
+        r"\b(khóa học|khoa hoc|khoá học|lớp học|chuỗi bài giảng)\b",
         r"\b(học|hoc) (mấy|may) (tháng|thang|tuần|tuan|buổi|buoi)\b",
         r"\b(ai dạy|ai day|giảng viên|giang vien|teacher|instructor)\b",
         r"\b(chứng chỉ|chung chi|certificate|cert|certification)\b",
@@ -81,6 +84,8 @@ INTENT_PATTERNS = {
         r"\b(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces).*(compatible|hợp|hop|match)\b",
         # Random nonsense — BLOCKED
         r"\b(1\+1|2\+2|3\+3|thời tiết|thoi tiet|weather|nấu ăn|nau an|game|trò chơi|tro choi)\b",
+        # Personal fortune telling / reading requests — BLOCKED
+        r"\b(bói|boi|xem bói|xem boi)\b",
         # Offensive / vulgar language — FILTERED with ***
     ],
     "handoff": [
@@ -179,10 +184,13 @@ if __name__ == "__main__":
         ("12 cung và 9 hành tinh là gì", "faq"),
         ("votive academy dạy những gì", "faq"),
         ("khóa học có những nội dung gì", "faq"),
-        # ✅ Should be booking
+        # ✅ Should be booking (explicit registration intent)
         ("tôi muốn đăng ký khóa học", "booking"),
-        ("học phí bao nhiêu", "booking"),
-        ("mình muốn tìm hiểu về Vedic", "booking"),
+        ("cho mình đăng ký khóa level 1", "booking"),
+        ("hướng dẫn mình đăng ký", "booking"),
+        # ✅ Should be FAQ (course consultation / pricing)
+        ("học phí bao nhiêu", "faq"),
+        ("mình muốn tìm hiểu về Vedic", "faq"),
         ("ai là giảng viên", "faq"),
         ("học mấy buổi thì xong", "faq"),
         # ❌ Should be off_topic

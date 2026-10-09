@@ -12,10 +12,16 @@ import logging
 from datetime import datetime, timezone
 from typing import Optional
 
-import requests
-from dotenv import load_dotenv
+try:
+    import requests
+except ImportError:
+    requests = None
 
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 log = logging.getLogger("votive-va-supabase")
 

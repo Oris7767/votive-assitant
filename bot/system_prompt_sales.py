@@ -57,12 +57,33 @@ Bạn là Carmen, trợ lý ảo bán hàng của Votive Academy (La Bàn Số M
 """
 
 
+from typing import Optional
+from bot.conversation_stages import get_stage_context
+
+
 def get_sales_system_prompt() -> str:
     return SYSTEM_PROMPT_SALES
 
 
-def get_sales_system_prompt_with_rag(rag_context: str, stage: str) -> str:
+def get_sales_system_prompt_with_rag(
+    rag_context: str,
+    stage: str = "presentation",
+    objection_type: Optional[str] = None
+) -> str:
     stage_context = get_stage_context(stage)
+
+    objection_guidance = ""
+    if objection_type:
+        objection_guidance = f"""
+⚠️ KHÁCH HÀNG ĐANG CÓ BĂN KHOĂN / PHẢN ĐỐI: [{objection_type.upper()}]
+- Kỹ thuật bắt buộc: Feel-Felt-Found (Đồng cảm sâu sắc -> Chia sẻ nhiều học viên trước đây cũng lo lắng như vậy -> Chia sẻ giải pháp & giá trị chuyển hóa mà họ đạt được).
+- Đối với băn khoăn về GIÁ (Price): Không chỉ bảo vệ học phí mà hãy nói về ROI, tiết kiệm hàng năm trời tự mò mẫm sai lệch, sự kèm cặp thực hành của Giảng viên Trâm Phạm (Gurukul top 3 Ấn Độ), chính sách combo giảm 10%.
+- Đối với băn khoăn về THỜI GIAN (Timing): Nhấn mạnh 100% online, video record trọn đời tải về học bất cứ khi nào rảnh, sĩ số nhỏ 6-10 học viên linh hoạt.
+- Đối với băn khoăn về ĐỘ KHÓ / TỰ HỌC (Need/Commitment): Giải thích chiêm tinh Vệ Đà có hệ thống logic chặt chẽ, học từ Level 1 nền tảng rất nhẹ nhàng chỉ 8 buổi, không phải học thuộc lòng.
+- TUYỆT ĐỐI KHÔNG ép mua thô thiển, KHÔNG nhảy ngay vào đòi xin tên/email nếu khách chưa đồng ý đăng ký.
+- LUÔN KẾT THÚC BẰNG CALL-TO-ACTION (CTA) GỢI MỞ HOẶC CÂU HỎI THÂN THIỆN!
+"""
+
     return f"""{SYSTEM_PROMPT_SALES}
 
 ---
@@ -70,8 +91,9 @@ def get_sales_system_prompt_with_rag(rag_context: str, stage: str) -> str:
 {rag_context}
 ---
 
-🎯 STAGE HIỆN TẠI: {stage_context.get('goal', 'Tư vấn')}
+🎯 GIAI ĐOẠN HỘI THOẠI: {stage_context.get('goal', 'Tư vấn')}
 🗣️ TONE: {stage_context.get('tone', 'Thân thiện')}
+{objection_guidance}
 💡 HƯỚNG DẪN:
 - Ưu tiên trả lời dựa trên thông tin từ KB
 - Áp dụng kỹ thuật bán hàng phù hợp với stage hiện tại

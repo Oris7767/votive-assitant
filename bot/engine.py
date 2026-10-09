@@ -23,6 +23,9 @@ from dotenv import load_dotenv
 import requests
 
 from bot.system_prompt import get_system_prompt, get_system_prompt_with_rag, get_booking_prompt
+from bot.system_prompt_sales import get_sales_system_prompt, get_sales_system_prompt_with_rag
+from bot.conversation_stages import ConversationStage, set_stage_to_session, get_stage_from_session
+from bot.sales_tactics import detect_objection, get_objection_response
 from bot.intent_router import detect_intent, needs_rag_search, needs_booking_flow, needs_handoff, is_off_topic, contains_profanity
 from bot.session import (
     load_session, create_session, add_message,
@@ -268,6 +271,16 @@ def chat(message: str, session_id: Optional[str] = None, source: str = "landing_
                 )
                 session["handoff_pending"] = True
     
+    # ── Handle objection / hesitation with sales focus ──
+    objection_type = detect_objection(message)
+    if objection_type:
+        session["intent"] = "objection"
+        set_stage_to_session(session, ConversationStage.OBJECTION_HANDLING)
+        if session["booking_data"]["step"] > 0:
+            reply, actions = _handle_booking(message, session)
+        else:
+            reply, actions = _handle_faq(message, session, stage="objection_handling", objection_type=objection_type)
+
     # ── Handle booking flow ─────────────────────────────
     elif needs_booking_flow(intent) or session["booking_data"]["step"] > 0:
         reply, actions = _handle_booking(message, session)
@@ -278,7 +291,7 @@ def chat(message: str, session_id: Optional[str] = None, source: str = "landing_
     
     # ── Handle FAQ with RAG ─────────────────────────────
     elif needs_rag_search(intent):
-        reply, actions = _handle_faq(message, session)
+        reply, actions = _handle_faq(message, session, stage="presentation")
     
     # ── Handle smalltalk ────────────────────────────────
     else:
@@ -308,8 +321,8 @@ def chat(message: str, session_id: Optional[str] = None, source: str = "landing_
     }
 
 
-def _handle_faq(message: str, session: dict) -> Tuple[str, list]:
-    """Handle FAQ with RAG search + file-based knowledge."""
+def _handle_faq(message: str, session: dict, stage: str = "presentation", objection_type: Optional[str] = None) -> Tuple[str, list]:
+    """Handle FAQ with RAG search + file-based knowledge + sales closing focus."""
     # 1. Load static knowledge from files (always included)
     course_info = _load_file("course_info.md")
     services = _load_file("services.md")
@@ -334,12 +347,9 @@ def _handle_faq(message: str, session: dict) -> Tuple[str, list]:
     if rag_results:
         context_parts.append(f"=== KIẾN THỨC CHIÊM TINH (RAG) ===\n{rag_results}")
 
-    rag_context = "\n\n".join(context_parts) if context_parts else None
+    rag_context = "\n\n".join(context_parts) if context_parts else ""
 
-    if rag_context:
-        system_prompt = get_system_prompt_with_rag(rag_context)
-    else:
-        system_prompt = get_system_prompt()
+    system_prompt = get_sales_system_prompt_with_rag(rag_context, stage=stage, objection_type=objection_type)
 
     # Build conversation history
     messages = [{"role": "system", "content": system_prompt}]
@@ -350,7 +360,13 @@ def _handle_faq(message: str, session: dict) -> Tuple[str, list]:
 
     reply = _call_deepseek(messages)
     
-    log.info(f"📖 RAG context chars: {len(rag_context) if rag_context else 0} | FAQ handled")
+    # Fallback to predefined objection response if DeepSeek fails
+    if ("⚠️" in reply or "sự cố" in reply) and objection_type:
+        fallback = get_objection_response(objection_type, {"course": BOOKING_COURSES.get(session.get("booking_data", {}).get("package_id"))})
+        if fallback:
+            reply = fallback
+
+    log.info(f"📖 RAG context chars: {len(rag_context)} | FAQ/Sales handled | stage={stage} | objection={objection_type}")
     return reply, []
 
 
@@ -372,8 +388,37 @@ def _load_file(path: str) -> Optional[str]:
         return None
 
 
+def _is_question_or_objection(message: str) -> bool:
+    """Check if message is asking a question or expressing objection rather than inputting form data."""
+    msg = message.lower().strip()
+    if "?" in msg:
+        return True
+    cues = [
+        "sao", "thế nào", "như thế nào", "gì", "không", "ko", "được không", "duoc khong",
+        "học phí", "bao nhiêu", "ưu đãi", "giảm giá", "đắt", "bận", "tự học", "đảm bảo",
+        "cam kết", "nhỡ", "nếu", "ai dạy", "khi nào", "bao lâu", "mấy buổi", "lịch học",
+        "tại sao", "chưa", "sợ", "lo", "phân vân", "mơ hồ"
+    ]
+    return any(cue in msg for cue in cues)
+
+
+def _is_likely_name(text: str) -> bool:
+    """Check if text looks like a human name."""
+    s = text.strip()
+    if len(s) < 2 or len(s) > 35:
+        return False
+    if "?" in s or "!" in s or "@" in s or "/" in s or "\\" in s or ":" in s:
+        return False
+    if _is_question_or_objection(s):
+        return False
+    words = s.split()
+    if len(words) > 5:
+        return False
+    return True
+
+
 def _handle_booking(message: str, session: dict) -> Tuple[str, list]:
-    """Handle booking flow — collect info step by step."""
+    """Handle booking flow — collect info step by step with escape hatches for inquiries."""
     bd = session["booking_data"]
     step = bd["step"]
     
@@ -381,6 +426,13 @@ def _handle_booking(message: str, session: dict) -> Tuple[str, list]:
     if step == 0:
         course_key = _parse_course(message)
         if course_key:
+            # Check if user is asking a question or hesitating rather than explicitly registering
+            if _is_question_or_objection(message):
+                reply, actions = _handle_faq(message, session, stage="presentation")
+                course = BOOKING_COURSES[course_key]
+                reply += f"\n\nBạn có muốn Carmen hỗ trợ đăng ký khóa **{course['name']}** ngay không? Mình có thể hỗ trợ bạn hoàn tất thông tin trong 1 phút nhé! 🪐"
+                return reply, actions
+
             bd["course_name"] = BOOKING_COURSES[course_key]["name"]
             bd["package_id"] = BOOKING_COURSES[course_key]["package_id"]
             session["booking_data"]["step"] = 1
@@ -404,21 +456,48 @@ def _handle_booking(message: str, session: dict) -> Tuple[str, list]:
     
     # Collect name
     if step == 1:
+        if not _is_likely_name(message):
+            objection_type = detect_objection(message)
+            reply, actions = _handle_faq(message, session, stage="objection_handling", objection_type=objection_type)
+            reply += "\n\nNếu bạn đã sẵn sàng bắt đầu hành trình, bạn cho Carmen xin **họ tên** để chuẩn bị hồ sơ học viên nhé! 😊"
+            return reply, actions
+
         bd["name"] = message.strip()
         session["booking_data"]["step"] = 2
         return "Cảm ơn bạn! 📝 Cho mình xin **email** nhé?", []
     
     # Collect email
     if step == 2:
-        if "@" not in message:
+        email_match = re.search(r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+", message)
+        if not email_match:
+            if _is_question_or_objection(message) or len(message) > 25:
+                objection_type = detect_objection(message)
+                reply, actions = _handle_faq(message, session, stage="objection_handling", objection_type=objection_type)
+                reply += "\n\nĐể mình lưu ưu đãi và chuẩn bị hồ sơ học viên cho bạn, bạn cho mình xin **email** nhé (vd: ten@email.com) 📧"
+                return reply, actions
             return "Email chưa đúng định dạng rồi. Bạn nhập lại nhé (vd: ten@email.com)", []
-        bd["email"] = message.strip().lower()
+
+        bd["email"] = email_match.group(0).lower()
         session["booking_data"]["step"] = 3
         return "Ok! 📧 Cho mình xin **số điện thoại** nhé?", []
     
     # Collect phone
     if step == 3:
-        bd["phone"] = message.strip()
+        phone_match = re.search(r"(?:0|\+84)[3|5|7|8|9][0-9]{8}\b", message.replace(" ", "").replace(".", ""))
+        if not phone_match:
+            digits = re.sub(r"\D", "", message)
+            if len(digits) >= 9 and len(digits) <= 12:
+                bd["phone"] = digits
+                session["booking_data"]["step"] = 4
+                return "Rồi! 📱 Bạn có dùng **Zalo** không? (optional — bỏ qua nếu không có)", []
+            if _is_question_or_objection(message) or len(message) > 25:
+                objection_type = detect_objection(message)
+                reply, actions = _handle_faq(message, session, stage="objection_handling", objection_type=objection_type)
+                reply += "\n\nBạn gửi cho mình **số điện thoại** để hoàn tất hồ sơ nhé 📱"
+                return reply, actions
+            return "Số điện thoại chưa đúng định dạng rồi. Bạn cho mình xin số điện thoại nhé (vd: 0901234567)", []
+
+        bd["phone"] = phone_match.group(0)
         session["booking_data"]["step"] = 4
         return "Rồi! 📱 Bạn có dùng **Zalo** không? (optional — bỏ qua nếu không có)", []
     

@@ -18,24 +18,23 @@ from bot.conversation_stages import ConversationStage, get_stage_context
 
 OBJECTION_PATTERNS = {
     "price": [
-        r"\b(đắt|dat|car|đắt quá|dat qua|hơi đắt|hoi dat|không đủ|khong du|ngân sách| ngan sach|budget|tiền|tien|đắt quá)\b",
-        r"\b(giá bao nhiêu|gia bao nhieu|giá bao|gia bao|giá cả|gia ca|phí|phi|chi phí|chi phi|học phí|hoc phi)\b",
-        r"\b(có rẻ hơn|co re hon|rẻ hơn|re hon|giảm giá|giam gia|discount|khuyến mãi|khuyen mai)\b",
+        r"\b(đắt|dat|đắt quá|dat qua|hơi đắt|hoi dat|không đủ tiền|khong du tien|ngân sách|budget|cao quá|cao qua|giá chát|phí cao)\b",
+        r"\b(có rẻ hơn|co re hon|rẻ hơn|re hon|giảm giá|giam gia|discount|khuyến mãi|khuyen mai|bớt không|bot khong)\b",
         r"\b(trả góp|tra gop|trả sau|tra sau|vay|loan|installment)\b",
     ],
     "timing": [
         r"\b(bận|ban|đang bận|dang ban|không có thời gian|khong co thoi gian|chưa được|chua duoc|tháng sau|thang sau|tuần sau|tuan sau|năm sau|nam sau)\b",
-        r"\b(bận quá|ban qua|work|làm việc|lam viec|busy)\b",
+        r"\b(bận quá|ban qua|work|làm việc|lam viec|busy|con nhỏ|con nho)\b",
     ],
     "trust": [
         r"\b(tin được không|tin duoc khong|uy tín|uy tin|đảm bảo|dam bao|giống như|giong nhu|lừa|lua|scam|fake)\b",
         r"\b(ai dạy|ai day|giảng viên|giang vien|teacher|bằng cấp|bang cap|chứng chỉ|chung chi)\b",
-        r"\b(kết quả|ket qua|hiệu quả|hieu qua|đảm bảo|đảm bảo được|dam bao duoc)\b",
+        r"\b(kết quả|ket qua|hiệu quả|hieu qua|đảm bảo|đảm bảo được|dam bao duoc|mơ hồ|mo ho)\b",
     ],
     "need": [
         r"\b(có cần không|co can khong|cần thiết|can thiet|không biết|khong biet|chưa chắc|chua chac|chưa rõ|chua ro)\b",
-        r"\b(tự học|tu hoc|học online|hoc online|miễn phí|mien phi|free)\b",
-        r"\b(đủ kiến thức|du kien thuc|tự đọc|tu doc)\b",
+        r"\b(tự học|tu hoc|miễn phí|mien phi|free|tự đọc|tu doc|tự tìm hiểu)\b",
+        r"\b(đủ kiến thức|du kien thuc|trên mạng|tren mang|youtube|google)\b",
     ],
     "comparison": [
         r"\b(so sánh|so sanh|khác với|khac voi|nơi khác|noi khac|trung tâm khác|trung tam khac|khóa khác|khoa khac)\b",
@@ -46,8 +45,8 @@ OBJECTION_PATTERNS = {
         r"\b(người thân|nguoi than|gia đình|gia dinh|vợ|chồng|vo|chong|bố mẹ|bo me)\b",
     ],
     "commitment": [
-        r"\b(sợ không theo|so khong theo|không cam kết|khong cam ket|ngại|ngai|không chắc|khong chac|sợ bỏ giữa chừng|so bo giua chung)\b",
-        r"\b(quá dài|qua dai|quá nhiều|qua nhieu|không kịp|khong kip)\b",
+        r"\b(sợ không theo|so khong theo|không cam kết|khong cam ket|ngại|ngai|không chắc|khong chac|sợ bỏ giữa chừng|so bo giua chung|sợ bỏ cuộc)\b",
+        r"\b(quá dài|qua dai|quá nhiều|qua nhieu|không kịp|khong kip|sợ khó|kho qua|khó quá|khó hiểu|trừu tượng|truu tuong)\b",
     ],
 }
 
